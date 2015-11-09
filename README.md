@@ -1,4 +1,6 @@
+# houey's tweaks to 0xd34db33f/gfyp (added in link to domaintools for each found domain)
 # GFYP - Go "Find Your" Phishers
+
 
 Having experimented with dnstwist for some time now, it dawned on me that it could be useful for alerting of new domains as they pop up related to your domains of interest. 
 
