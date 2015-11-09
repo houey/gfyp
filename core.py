@@ -19,7 +19,7 @@ import smtplib
 
 EMAIL_USERNAME = "EMAIL_ADDRESS_GOES_HERE"
 EMAIL_PASSWORD = "EMAIL_PASSWORD_GOES_HERE"
-EMAIL_STMPSERVER = "SMTP_SERVER_GOES_HERE"
+EMAIL_SMTPSERVER = "SMTP_SERVER_GOES_HERE"
 
 #Code below taken from: http://stackoverflow.com/questions/10147455/trying-to-send-email-gmail-as-mail-provider-using-python
 def send_email(recipient, subject, body):
@@ -33,7 +33,7 @@ def send_email(recipient, subject, body):
 	message = """\From: %s\nTo: %s\nSubject: %s\n\n%s
 	""" % (FROM, ", ".join(TO), SUBJECT, TEXT)
 	try:
-		server_ssl = smtplib.SMTP_SSL(EMAIL_STMPSERVER, 465)
+		server_ssl = smtplib.SMTP_SSL(EMAIL_SMTPSERVER, 465)
 		server_ssl.ehlo()
 		server_ssl.login(EMAIL_USERNAME, EMAIL_PASSWORD)  
 		server_ssl.sendmail(FROM, TO, message)
@@ -43,7 +43,7 @@ def send_email(recipient, subject, body):
 
 def main():
 	dnsCheck = dnslib()
-	conn = sqlite3.connect('db.db')
+	conn = sqlite3.connect('/opt/gfyp/db.db')
 	c = conn.cursor()
 	domainentries =  c.execute('SELECT * FROM lookupTable').fetchall()
 	for row in domainentries:
@@ -55,7 +55,9 @@ def main():
 			entriesIter = foundEntries.fetchall()
 			if len(entriesIter) == 0:
 				c.execute("INSERT INTO foundDomains VALUES ('%s','%s')" % (entry[0],entry[1]))
-				body = body+"\r\n\r\n%s - %s" % (entry[0],entry[1])
+				#Changing the body to include link to domaintools whois
+				#body = body+"\r\n\r\n%s - %s" % (entry[0],entry[1])
+				body = body+"\r\n\r\n%s - %s - https://whois.domaintools.com/%s" % (entry[0],entry[1],entry[0])
 		if body != "":
 			send_email(row[0],'GFYP - New Entries for %s' % row[1],body) 
 	conn.commit()
